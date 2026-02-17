@@ -9,7 +9,10 @@ router = Router()
 @router.message(Command("session_start"))
 async def cmd_start(message: Message):
     chat_id = message.chat.id
-    started = storage.start_session(chat_id)
+    thread_id = message.message_thread_id
+
+    started = storage.start_session(chat_id, thread_id)
+
     if started:
         await message.reply("Сессия запущена.")
     else:
@@ -21,12 +24,17 @@ async def cmd_start(message: Message):
 @router.message(Command("session_finish"))
 async def cmd_finish(message: Message):
     chat_id = message.chat.id
-    summary = storage.finish_session(chat_id)
+    thread_id = message.message_thread_id
+
+    summary = storage.finish_session(chat_id, thread_id)
+
     if summary is None:
         await message.reply("Сессия не активна.")
     else:
         text = (
-            f"Итоги сессии:\n\nОбщий доход RUB: {summary['total_income']}\n"
+            f"Итоги сессии:\n\n"
+            f"Общий доход RUB: {summary['total_income']}\n"
             f"Общий доход USDT: {summary['total_commission']}\n"
+            f"Чистая прибыль: {summary['profit']}\n"
         )
         await message.reply(text)

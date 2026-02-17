@@ -8,16 +8,13 @@ router = Router()
 
 @router.message()
 async def photo_handler(message: Message):
-    # Only process messages that contain photos
     if not message.photo:
         return
 
     chat_id = message.chat.id
-    if not storage.is_active(chat_id):
-        return
+    thread_id = message.message_thread_id
 
-    if not message.photo:
-        await message.reply("Данные не учтены: отсутствует фото.")
+    if not storage.is_active(chat_id, thread_id):
         return
 
     caption = message.caption
@@ -43,5 +40,6 @@ async def photo_handler(message: Message):
             await message.reply("Неверный формат.\nИспользуйте: доход / комиссия")
         return
 
-    storage.add_entry(chat_id, income, commission)
+    storage.add_entry(chat_id, thread_id, income, commission)
+
     await message.reply("Данные учтены.")
