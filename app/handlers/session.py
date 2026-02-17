@@ -26,7 +26,7 @@ async def cmd_finish(message: Message):
         await message.reply("Сессия не активна.")
     else:
         text = (
-            f"Итоги сессии:\n\nОбщий доход: {summary['total_income']}\n"
-            f"Общая комиссия: {summary['total_commission']}\nПрибыль: {summary['profit']}"
+            f"Итоги сессии:\n\nОбщий доход RUB: {summary['total_income']}\n"
+            f"Общий доход USDT: {summary['total_commission']}\n"
         )
         await message.reply(text)

@@ -1,8 +1,15 @@
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+
 from aiohttp import web
 from aiogram import Bot, Dispatcher
+from aiogram.client.bot import DefaultBotProperties
 from aiogram.types import Update
 import asyncio
 import logging
+
+asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 from app.config import settings
 from app.logging_config import setup_logging
@@ -36,7 +43,7 @@ async def on_cleanup(app: web.Application):
 
 def create_app() -> web.Application:
     setup_logging()
-    bot = Bot(settings.BOT_TOKEN, parse_mode='HTML')
+    bot = Bot(settings.BOT_TOKEN, default=DefaultBotProperties(parse_mode='HTML'))
     dp = Dispatcher()
     dp.include_router(session_router)
     dp.include_router(messages_router)
@@ -50,6 +57,14 @@ def create_app() -> web.Application:
     return app
 
 
+async def main():
+    setup_logging()
+    bot = Bot(settings.BOT_TOKEN, default=DefaultBotProperties(parse_mode='HTML'))
+    dp = Dispatcher()
+    dp.include_router(session_router)
+    dp.include_router(messages_router)
+    await dp.start_polling(bot)
+
+
 if __name__ == '__main__':
-    app = create_app()
-    web.run_app(app, host=settings.WEBAPP_HOST, port=settings.WEBAPP_PORT)
+    asyncio.run(main())
