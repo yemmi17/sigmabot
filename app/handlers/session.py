@@ -34,7 +34,6 @@ async def cmd_finish(message: Message):
         text = (
             f"Итоги сессии:\n\n"
             f"Общий доход RUB: {summary['total_income']}\n"
-            f"Общий доход USDT: {summary['total_commission']}\n"
-            f"Чистая прибыль: {summary['profit']}\n"
+            f"Общий доход USDT: {summary['total_commission']}"
         )
         await message.reply(text)
